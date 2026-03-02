@@ -1,9 +1,14 @@
+ifneq (, $(wildcard ./.env))
+	include .env
+	export
+endif
+
 define to_lower
 $(shell echo $(1) | tr '[:upper:]' '[:lower:]')
 endef
 
 LOWER_TERRAFORM_ENV := $(call to_lower,$(TERRAFORM_ENV))
-TERRAFORM = terraform -chdir=$(TERRAFORM_DIR)
+TERRAFORM = terraform -chdir=$(TERRAFORM_DIR) 
 
 ifeq ($(LOWER_TERRAFORM_ENV),prod)
   TERRAFORM_DIR := ./terraform/env/prod
@@ -21,13 +26,19 @@ endif
 
 PLAN_FILE = tfplan
 
+BACKEND_ARGS := \
+	-backend-config="bucket=$(TF_STATE_BUCKET)" \
+	-backend-config="key=$(TF_STATE_KEY)" \
+	-backend-config="region=$(AWS_REGION)" \
+	-backend-config="dynamodb_table=$(TF_LOCK_TABLE)" \
+	-backend-config="encrypt=true"
+
+terraform-init-migrate:
+	$(TERRAFORM) init -migrate-state $(BACKEND_ARGS)
+
 terraform-init:
-ifneq ("$(wildcard $(TERRAFORM_DIR))","")
-	$(TERRAFORM) init -migrate-state
-else
-	$(TERRAFORM) init
-endif
-	
+	$(TERRAFORM) init $(BACKEND_ARGS)	
+
 terraform-fmt:
 	$(TERRAFORM) fmt -recursive
 
@@ -43,8 +54,6 @@ terraform-apply:
 terraform-destroy:
 	$(TERRAFORM) destroy
 
-
 terraform-routine: terraform-plan terraform-apply
 
 .PHONY: terraform-init terraform-fmt terraform-validate terraform-plan terraform-apply terraform-destroy terraform-routine
-
