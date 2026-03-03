@@ -1,29 +1,29 @@
+# TODO: fix this pipeline to work correctly
+
 name: Terraform
 
 on:
   push:
     branches: [main]
-
 permissions:
   id-token: write
   contents: read
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: "1.14.6"
-
-      - name: Configure AWS credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::AIDA2PZEVYDHLYWLGRKN3::role/github-actions-terraform
-          aws-region: us-east-1
-
-      - name: Terraform 
-        run: make terraform-routine
+#
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - uses: hashicorp/setup-terraform@v3
+#        with:
+#          terraform_version: "1.14.6"
+#
+#      - name: Configure AWS credentials (OIDC)
+#        uses: aws-actions/configure-aws-credentials@v4
+#        with:
+#          role-to-assume: arn:aws:iam::<ID_IS_WRONG>::role/github-actions-terraform
+#          aws-region: us-east-1
+#
+#      - name: Terraform
+#        run: make terraform-routine
