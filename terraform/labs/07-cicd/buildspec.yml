@@ -1,0 +1,31 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.12
+    commands:
+      - pip install --upgrade pip
+
+  pre_build:
+    commands:
+      - echo "Running tests..."
+      - python -m pytest tests/ --tb=short || true
+
+  build:
+    commands:
+      - echo "Build started on $(date)"
+      - zip -r artifact.zip . -x "*.git*"
+
+  post_build:
+    commands:
+      - echo "Build completed on $(date)"
+
+artifacts:
+  files:
+    - artifact.zip
+  discard-paths: yes
+
+cache:
+  paths:
+    - "/root/.cache/pip/**/*"

@@ -1,0 +1,20 @@
+[project]
+name = "aws-labs"
+version = "0.1.0"
+requires-python = ">=3.12"
+
+[tool.uv.workspace]
+members = [
+	"terraform/labs/01-lambda-api",
+	"terraform/labs/02-dynamodb",
+	"terraform/labs/03-sqs-sns",
+	"terraform/labs/04-kinesis",
+	"terraform/labs/08-monitoring",
+]
+
+[dependency-groups]
+dev = ["boto3>=1.38", "moto[all]>=5.0", "pytest>=8.0", "pytest-cov>=6.0"]
+
+[tool.pytest.ini_options]
+addopts = "-v --import-mode=importlib"
+testpaths = ["terraform/labs"]
