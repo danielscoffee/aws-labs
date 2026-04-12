@@ -53,3 +53,5 @@ Thumbs.db
 
 tmp/
 temp/
+
+node_modules/
